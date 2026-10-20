@@ -1,0 +1,1416 @@
+/* =========================================================================
+   Lamp — folha de estilo única · paleta Helsing
+
+   Linguagem visual: superfícies retas, sem canto arredondado e sem borda.
+   A separação entre blocos vem da diferença de tom entre as superfícies,
+   não de contorno nem de sombra. Cada texto selecionável acende em laranja
+   ao receber o cursor.
+
+   1 tokens · 2 reset · 3 utilitários · 4 header · 5 hero · 6 superfícies
+   7 títulos · 8 sobre · 9 competências · 10 timeline · 11 projetos
+   12 contato · 13 footer · 14 responsivo · 15 impressão
+   ========================================================================= */
+
+/* ---------------------------- 1. TOKENS ---------------------------------- */
+:root {
+  /* Paleta Helsing, amostrada do site --------------------------------- */
+  /* O cinza #9E9A9B ocupando a tela inteira fica pesado: no site de
+     origem ele é a faixa do rodapé, não o corpo. Aqui o corpo recebe o
+     mesmo cinza clareado, com matiz (345 graus) e saturação (2%)
+     preservadas, e o #9E9A9B volta ao papel de faixa.
+
+     O nível foi calibrado contra o corpo da própria Helsing, o bege
+     #DED6CB: este cinza fica 7% acima dele em luminância. A folga é
+     deliberada — cinza neutro é lido como mais pesado que um bege de
+     mesma luminância, porque o calor da cor passa por claridade; igualar
+     na medida deixaria a página com aparência mais fechada que a
+     referência.                                                       */
+  --c-bg: #DFDDDE;      /* fundo da página — tinta a 12.30:1       */
+  --c-mid: #9E9A9B;     /* faixa: barra superior sólida e rodapé   */
+  --c-deep: #474749;    /* cinza escuro: marcas e contraste forte  */
+  --c-ink: #1F1E1E;     /* texto principal                         */
+  --c-soft: #3A393B;    /* texto de apoio — 8.50:1 sobre o fundo   */
+  --c-accent: #F17113;  /* laranja: hover e destaque               */
+  --c-paper: #DED6CB;   /* bege do site de referencia: caixa de fluxograma */
+
+  /* AVISO DE CONTRASTE
+     O laranja rende 2.18:1 sobre o fundo e 1.06:1 sobre a faixa — abaixo
+     de 4.5:1 (texto normal) e de 3:1 (texto grande) da WCAG AA. Quem
+     enxerga pouca cor, ou depende de contraste, não vai perceber o estado
+     de hover. É a cor do site de referência e está aplicada como pedido.
+     Para corrigir sem mudar a matiz (25.4 graus), troque --c-accent:
+       #C55A0C  -> 3.01:1 sobre o fundo, serve para texto grande
+       #984509  -> 4.57:1 sobre o fundo, passa AA em qualquer tamanho
+     Sobre o hero escuro o laranja rende 6.52:1 e não tem problema.
+     No menu o hover também muda o peso da fonte, o que continua
+     perceptível mesmo sem distinguir a cor.                           */
+
+  /* Degraus de superfície derivados do cinza, para separar blocos sem
+     recorrer a borda nem a sombra. Tinta e apoio passam AA nos três.   */
+  --surface-up: #EEEDED;   /* elevado: cartões, faixas de cabeçalho — 14.23:1 */
+  --surface: #DFDDDE;      /* base                                  — 12.30:1 */
+  --surface-down: #CBC8C9; /* recuado: blocos aninhados             — 10.01:1 */
+
+  /* Fios finos, apenas onde separar conteúdo dentro de um bloco */
+  --rule: rgba(31, 30, 30, 0.18);
+  --rule-strong: rgba(31, 30, 30, 0.32);
+
+  /* O hero mantém o fundo escuro para a fotografia não mudar de leitura */
+  --c-dark: #0B0F12;
+
+  /* Presença das fotografias: 0 some de vez, 1 aparece cheia.
+     São os únicos números a mexer para a imagem avançar ou recuar. */
+  --hero-photo: 0.30;
+  --band-photo: 0.30;
+
+  /* Tipografia
+     Archivo: grotesca de leitura próxima à Alliance No.1, usada pela
+     Palantir. A Alliance é comercial e não pode ser redistribuída aqui;
+     ver CREDITS.md para a troca, caso a licença seja adquirida. */
+  --font-display: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-body: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Code", Consolas, monospace;
+
+  /* Espaçamento */
+  --maxw: 1140px;
+  --gutter: 24px;
+  --header-h: 68px;
+
+  /* Movimento */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur: 0.45s;
+
+  color-scheme: light;
+}
+
+/* ----------------------------- 2. RESET ---------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 16px);
+  -webkit-text-size-adjust: 100%;
+
+  /* Barra de rolagem invisivel. A pagina continua rolando normalmente por
+     roda, teclado e toque; some apenas o trilho da direita. Firefox usa
+     scrollbar-width, Edge legado -ms-overflow-style, WebKit o pseudo. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; }
+
+body {
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+img, svg { display: block; max-width: 100%; }
+
+a { color: inherit; text-decoration: none; transition: color 0.18s var(--ease); }
+
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+}
+
+/* Regra geral: todo texto selecionável acende em laranja sob o cursor. */
+a:hover,
+a:focus-visible { color: var(--c-accent); }
+
+/* --------------------------- 3. UTILITÁRIOS ------------------------------ */
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+  padding: 12px 18px;
+  background: var(--c-ink);
+  color: var(--c-bg);
+  font-weight: 600;
+}
+.skip-link:focus { left: 0; }
+
+.icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icon--solid { fill: currentColor; stroke: none; }
+.icon--lg { width: 24px; height: 24px; }
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+.timeline-item.left.reveal  { transform: translateX(-28px); }
+.timeline-item.right.reveal { transform: translateX(28px); }
+.timeline-item.reveal.is-visible { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal, .timeline-item.reveal { opacity: 1; transform: none; transition: none; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ----------------------------- 4. HEADER --------------------------------- */
+/* Três estados, encadeados pelo JS:
+   repouso   — transparente sobre a fotografia, texto em branco;
+   is-solid  — fundo escuro, depois que o hero sai de cena;
+   is-hidden — recolhida para fora da tela ao descer, volta ao subir.
+   É o recolher e devolver que faz a barra entrar de forma natural, em
+   vez de materializar de uma vez no meio da rolagem.                  */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: transparent;
+  transform: translateY(0);
+  transition: background 0.3s var(--ease), transform 0.34s var(--ease);
+}
+.site-header.is-solid { background: var(--c-mid); }
+.site-header.is-hidden { transform: translateY(-100%); }
+
+/* Na barra sólida o fundo é claro, então o texto escurece. Sobre a
+   fotografia ele segue branco. */
+.site-header.is-solid .brand { color: var(--c-ink); }
+.site-header.is-solid .nav__link { color: var(--c-soft); }
+.site-header.is-solid .nav__link.is-active { color: var(--c-ink); }
+.site-header.is-solid .nav-toggle__bar { background: var(--c-ink); }
+
+/* Troca de idioma. Mora fora do painel do menu movel, ao lado do hamburguer,
+   para continuar alcancavel com o menu fechado. O link aponta para a mesma
+   pagina no outro idioma, entao a URL sozinha ja carrega a escolha. */
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 46px;
+  height: 36px;
+  padding: 0 10px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: color 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+.lang-switch:hover { color: var(--c-accent); border-color: var(--c-accent); }
+.site-header.is-solid .lang-switch {
+  color: var(--c-ink);
+  border-color: rgba(31, 30, 30, 0.45);
+}
+.site-header.is-solid .lang-switch:hover {
+  color: var(--c-accent);
+  border-color: var(--c-accent);
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: var(--header-h);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #fff;
+}
+.brand__mark {
+  width: 9px;
+  height: 9px;
+  background: var(--c-accent);
+}
+.brand:hover { color: var(--c-accent); }
+
+.nav__list { display: flex; align-items: center; gap: 6px; }
+
+/* Só a palavra, sem cartão: negrito por padrão; ao passar o mouse perde
+   o negrito e acende em laranja.                                       */
+.nav__link {
+  display: block;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.68);
+  background: none;
+  transition: color 0.18s var(--ease), font-weight 0.18s var(--ease);
+}
+
+/* Reserva a largura do negrito em uma cópia invisível, senão o texto se
+   desloca quando o peso cai no hover e o menu inteiro treme.           */
+.nav__link::before {
+  content: attr(data-text);
+  display: block;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.nav__link.is-active { color: #fff; }
+
+.nav__link:hover,
+.nav__link.is-active:hover {
+  font-weight: 400;
+  color: var(--c-accent);
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 42px;
+  height: 42px;
+  padding: 0 10px;
+}
+.nav-toggle__bar {
+  height: 2px;
+  width: 100%;
+  background: #fff;
+  transition: transform 0.28s var(--ease), opacity 0.28s var(--ease), background 0.3s var(--ease);
+}
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ============================= 5. HERO =================================== */
+/* O hero conserva o fundo escuro para que a fotografia continue sendo
+   lida exatamente como antes da mudança de paleta.                     */
+.hero {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  min-height: 520px;
+  background: var(--c-dark);
+  color: #fff;
+  isolation: isolate;
+}
+
+/* A fotografia vive nesta camada para poder ser atenuada por opacidade
+   em vez de coberta por uma chapa. Trocar de foto: mudar a url.        */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: url(../img/bg-hero.jpg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center center;
+  opacity: var(--hero-photo);
+  filter: saturate(0.8) contrast(0.95);
+}
+
+@media (max-width: 1024px) {
+  .hero::before { background-attachment: scroll; }
+}
+
+/* Véu uniforme, só para assentar o texto sobre a fotografia.
+   Sem degradê até a cor da página: a borracha de um gradiente entre a
+   foto e o conteúdo vira um borrão. A seção termina em corte seco. */
+.hero__veil {
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 15, 18, 0.14);
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  height: 100%;
+  text-align: center;
+}
+
+.hero__subtitle {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--c-accent);
+  text-shadow: 0 2px 18px rgba(11, 15, 18, 0.75);
+}
+
+
+.hero__scroll {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: 34px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-left: -22px;
+  color: #fff;
+  animation: bob 2.4s var(--ease) infinite;
+}
+.hero__scroll:hover { color: var(--c-accent); }
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(7px); }
+}
+
+/* ========================= 6. SUPERFÍCIES =============================== */
+.section { padding: 96px 0; }
+
+/* Seção em tom alternado. A mudança de fundo é o que a separa da
+   anterior — não há linha nem sombra.                                  */
+.section-alt {
+  position: relative;
+  padding: 7rem 0;
+  background: var(--surface-down);
+}
+.section-alt__inner { position: relative; }
+
+/* ---------------------- faixa com fotografia ----------------------------
+   Mesmo tratamento do hero: a imagem fica em camada própria, atenuada por
+   opacidade sobre base escura, e a faixa termina em corte seco contra as
+   seções claras. Entra e sai sem degradê, para não repetir o borrão.    */
+.photo-band {
+  position: relative;
+  padding: 7rem 0;
+  background: var(--c-dark);
+  color: #fff;
+  isolation: isolate;
+}
+
+/* Trocar de foto: mudar a url abaixo. */
+.photo-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: url(../img/bg-experience.jpg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center center;
+  opacity: var(--band-photo);
+  filter: saturate(0.8) contrast(0.95);
+}
+
+@media (max-width: 1024px) {
+  .photo-band::before { background-attachment: scroll; }
+}
+
+.photo-band__veil {
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 15, 18, 0.14);
+}
+
+.photo-band__inner { position: relative; z-index: 1; }
+
+/* Dentro da faixa escura a tipografia inverte. */
+.photo-band .title-a { color: #fff; }
+.photo-band .timeline-date { color: rgba(255, 255, 255, 0.82); }
+.photo-band .timeline::after { background: rgba(255, 255, 255, 0.34); }
+.photo-band .timeline-item::after { background: rgba(255, 255, 255, 0.72); }
+.photo-band .timeline-item:hover::after { background: var(--c-accent); }
+
+/* Cartões no cinza escuro da paleta, como os blocos sobre a foto no site
+   de referência. Branco sobre #474749 rende 9.27:1.                     */
+.photo-band .timeline-text { background: var(--c-deep); }
+.photo-band .timeline-text:hover { background: #535356; }
+.photo-band .timeline-text__head { background: #525255; }
+.photo-band .timeline-text:hover .timeline-text__head { background: #5D5D60; }
+.photo-band .timeline-text h3 { color: #fff; }
+.photo-band .timeline-text h4 { color: rgba(255, 255, 255, 0.76); }
+.photo-band .timeline-text p { color: rgba(255, 255, 255, 0.82); }
+
+/* Recipiente maior. Reto, sem contorno: distingue-se do fundo pelo tom. */
+.panel {
+  position: relative;
+  z-index: 2;
+  padding: 2.75rem 2.25rem;
+  background: var(--surface-up);
+}
+.panel--narrow { max-width: 760px; margin-inline: auto; }
+
+/* ---------------------------- 7. TÍTULOS --------------------------------- */
+.title-box { margin-bottom: 4rem; text-align: center; }
+
+.title-a {
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: var(--c-ink);
+}
+
+.line-mf {
+  width: 44px;
+  height: 3px;
+  margin: 18px auto 0;
+  background: var(--c-accent);
+}
+
+.title-left {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.title-s {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--c-soft);
+}
+
+/* ----------------------------- 8. SOBRE ---------------------------------- */
+.about {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+}
+
+.about__id {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.about__photo img { width: 100%; height: auto; }
+
+/* Lista de dados: rótulo em versalete acima do valor */
+.about__info { display: grid; gap: 13px; }
+.about__info p { display: grid; gap: 1px; }
+.about__info p span:last-child { font-size: 0.95rem; color: var(--c-ink); }
+
+.about__social { display: flex; gap: 9px; margin-top: 6px; }
+
+.icon-link {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  color: var(--c-soft);
+  background: var(--surface-down);
+  transition: color 0.18s var(--ease), background 0.18s var(--ease);
+}
+.icon-link:hover { color: var(--c-accent); background: var(--surface); }
+
+.about__right p { color: var(--c-soft); }
+.about__right p + p { margin-top: 15px; }
+
+.lead {
+  font-family: var(--font-display);
+  font-size: 1.18rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--c-ink) !important;
+}
+
+/* ------------------------- 9. COMPETÊNCIAS ------------------------------- */
+.skills { margin-top: 34px; }
+
+.skills__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.skill-card { background: var(--surface-down); }
+
+.skill-card__title {
+  padding: 11px 15px;
+  background: var(--surface);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--c-ink);
+}
+
+.skill-card__body { padding: 13px 15px 14px; }
+
+.pill {
+  display: inline-block;
+  margin: 0 5px 5px 0;
+  padding: 4px 11px;
+  font-family: var(--font-mono);
+  font-size: 0.715rem;
+  color: var(--c-soft);
+  background: var(--surface-up);
+}
+
+/* --------------------------- 10. TIMELINE -------------------------------- */
+.timeline { position: relative; width: 100%; }
+
+.timeline::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--rule-strong);
+}
+
+.timeline-item {
+  position: relative;
+  width: 50%;
+  margin-bottom: 30px;
+}
+.timeline-item.left  { left: 0;   padding-right: 34px; }
+.timeline-item.right { left: 50%; padding-left: 34px; }
+
+/* Marcador quadrado sobre a linha */
+.timeline-item::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 30px;
+  right: -6px;
+  width: 12px;
+  height: 12px;
+  background: var(--c-soft);
+  transition: background 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.timeline-item.right::after { left: -6px; right: auto; }
+.timeline-item:hover::after {
+  background: var(--c-accent);
+  transform: scale(1.3);
+}
+
+.timeline-date {
+  position: absolute;
+  top: 26px;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-soft);
+  z-index: 1;
+}
+.timeline-item.left .timeline-date  { left: calc(100% + 58px); text-align: left; }
+.timeline-item.right .timeline-date { right: calc(100% + 58px); text-align: right; }
+
+.timeline-text {
+  position: relative;
+  background: var(--surface-up);
+  transition: background 0.25s var(--ease);
+}
+.timeline-text:hover { background: var(--surface); }
+
+.timeline-text__head {
+  padding: 18px 24px 15px;
+  background: var(--surface);
+  transition: background 0.25s var(--ease);
+}
+.timeline-text:hover .timeline-text__head { background: var(--surface-down); }
+.timeline-text__body { padding: 17px 24px 20px; }
+
+.timeline-text h3 {
+  margin-bottom: 3px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--c-ink);
+}
+.timeline-text h4 {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--c-soft);
+}
+.timeline-text p {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--c-soft);
+}
+
+/* ---------------------------- 11. PROJETOS ------------------------------- */
+.work-box {
+  margin-bottom: 20px;
+  background: var(--surface-up);
+  transition: background 0.25s var(--ease);
+}
+.work-box:last-child { margin-bottom: 0; }
+.work-box:hover { background: var(--surface); }
+
+.work-box__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 17px 24px;
+  background: var(--surface);
+  transition: background 0.25s var(--ease);
+}
+.work-box:hover .work-box__head { background: var(--surface-down); }
+
+.work-box__title {
+  font-size: 1.22rem;
+  font-weight: 700;
+  transition: color 0.25s var(--ease);
+}
+/* O link cobre so o cabecalho, entao o hover nativo do <a> deixava o titulo
+   laranja apenas ali. Aqui o cartao inteiro comanda, junto com o fundo e a
+   seta. Ressalva ja conhecida do README: o laranja rende 1,78:1 sobre o tom
+   do cabecalho em hover, entao quem depende de contraste nao percebe a
+   mudanca; o deslocamento da seta continua sinalizando sem depender de cor. */
+.work-box:hover .work-box__title { color: var(--c-accent); }
+
+.work-box__body { padding: 20px 24px 22px; }
+
+.work-box__desc {
+  color: var(--c-soft);
+  font-size: 0.945rem;
+}
+/* Card de projeto que juntou dois sistemas traz um paragrafo por metade. */
+.work-box__desc + .work-box__desc { margin-top: 14px; }
+
+/* Subtitulo dentro do card que junta dois sistemas, antes do segundo paragrafo. */
+.work-box__sub {
+  margin-top: 18px;
+  margin-bottom: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-ink);
+}
+
+.work-box__stack {
+  margin-top: 15px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.03em;
+  color: var(--c-soft);
+}
+
+/* ---------------------------- 12. CONTATO -------------------------------- */
+.contact {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.contact__item {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  padding: 26px 20px;
+  text-align: center;
+  background: var(--surface-down);
+  transition: background 0.25s var(--ease);
+}
+.contact__item:hover { background: var(--surface); }
+.contact__item .icon--lg { color: var(--c-accent); margin-bottom: 10px; }
+
+.contact__label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--c-soft);
+}
+.contact__value { font-weight: 600; }
+
+/* ----------------------------- 13. FOOTER -------------------------------- */
+/* Rodapé na faixa cinza da Helsing, com texto escuro — a mesma relação
+   que o site de origem tem entre corpo claro e faixa. Separa-se da
+   página por corte seco, sem linha nem sombra. */
+.site-footer {
+  padding: 34px 0;
+  background: var(--c-mid);
+  color: var(--c-ink);
+}
+.footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.footer__copy { font-size: 0.72rem; color: var(--c-ink); }
+.footer__credit { margin-top: 4px; font-size: 0.64rem; color: var(--c-deep); }
+.footer__credit a {
+  color: var(--c-deep);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Volta ao topo: quadrado fixo no canto inferior direito, visivel depois de
+   600px de rolagem. Substitui o link que ficava no fluxo do rodape. */
+.to-top {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  color: var(--c-bg);
+  background: var(--c-ink);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.28s var(--ease), transform 0.28s var(--ease),
+              visibility 0.28s, color 0.18s var(--ease), background 0.18s var(--ease);
+}
+.to-top.is-visible { opacity: 1; visibility: visible; transform: none; }
+/* No fim da pagina o botao flutuante cobriria os creditos das fotografias,
+   que as licencas CC BY-SA obrigam a exibir. Enquanto o rodape esta a vista,
+   ele recolhe. Regra depois de .is-visible de proposito: mesma
+   especificidade, entao quem vem por ultimo vence. */
+.to-top.is-tucked {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+}
+.to-top:hover { background: var(--c-accent); color: var(--c-ink); }
+.to-top .icon { stroke-width: 2; }
+
+/* --------------------------- 14. RESPONSIVO ------------------------------ */
+@media (min-width: 768px) {
+  .hero__subtitle { font-size: 2.5rem; }
+}
+
+@media (max-width: 991px) {
+  .about { grid-template-columns: 1fr; gap: 34px; }
+  .panel { padding: 2rem 1.4rem; }
+}
+
+@media (max-width: 767px) {
+
+  :root { --gutter: 20px; }
+
+  .section { padding: 72px 0; }
+  .section-alt, .photo-band { padding: 5rem 0; }
+  .title-box { margin-bottom: 2.75rem; }
+
+  .nav-toggle { display: flex; }
+
+  .nav {
+    position: fixed;
+    inset: var(--header-h) 0 auto 0;
+    padding: 8px var(--gutter) 18px;
+    background: var(--c-mid);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.3s var(--ease), opacity 0.3s var(--ease), visibility 0.3s;
+  }
+  .nav.is-open { transform: none; opacity: 1; visibility: visible; }
+
+  .nav__list { flex-direction: column; align-items: stretch; gap: 0; }
+  /* No painel aberto o fundo é a faixa clara, então o texto escurece
+     mesmo com a barra ainda transparente sobre a fotografia. */
+  .nav__link,
+  .site-header.is-solid .nav__link {
+    padding: 13px 4px;
+    font-size: 1rem;
+    color: var(--c-soft);
+  }
+  .nav__link.is-active,
+  .site-header.is-solid .nav__link.is-active { color: var(--c-ink); }
+
+  .about__id { grid-template-columns: 1fr; }
+  .about__photo { max-width: 240px; }
+
+  .footer__inner { justify-content: center; text-align: center; }
+  .to-top { right: 16px; bottom: 16px; }
+
+  /* Vinha de um @media de 760px separado. Os dois faziam a mesma travessia
+     para tela estreita, e 7px de diferenca era colagem, nao decisao. Ficou
+     em 767 porque e o par de @media (min-width: 768px), ja no arquivo, e
+     porque subir o corte so antecipa o layout estreito — nada fica mais
+     apertado do que estava. */
+  /* Timeline colapsa para coluna única alinhada à esquerda */
+  .timeline::after { left: 6px; }
+
+  .timeline-item,
+  .timeline-item.left,
+  .timeline-item.right {
+    width: 100%;
+    left: 0;
+    padding-left: 38px;
+    padding-right: 0;
+  }
+
+  .timeline-item.left::after,
+  .timeline-item.right::after { left: 0; right: auto; }
+
+  .timeline-item.left .timeline-date,
+  .timeline-item.right .timeline-date {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: auto;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+
+  .timeline-item.left.reveal,
+  .timeline-item.right.reveal { transform: translateY(18px); }
+  .timeline-item.reveal.is-visible { transform: none; }
+
+  /* Fundos em 1280px no lugar dos de 2560px: num celular de 390px, mesmo
+     a 3x de densidade, 1280 ja cobre. Corta 1,4 MB para 406 KB. */
+  .hero::before { background-image: url(../img/bg-hero-sm.jpg); }
+  .photo-band::before { background-image: url(../img/bg-experience-sm.jpg); }
+}
+
+@media (max-width: 520px) {
+  .skills__grid { grid-template-columns: 1fr; }
+}
+
+/* ------------------------- 15. PÁGINA DE PROJETO ------------------------- */
+/* As páginas de `projetos/` não têm hero, e a barra superior em repouso é
+   transparente com texto branco — que sobre o fundo claro sumiria. Por isso
+   ela nasce sólida aqui. As declarações repetem as de `.is-solid` porque CSS
+   não tem como dizer "este seletor vale também naquele caso"; o JS continua
+   livre para pôr e tirar `.is-solid` conforme a rolagem, sem conflito. */
+.page-case .site-header { background: var(--c-mid); }
+.page-case .brand { color: var(--c-ink); }
+.page-case .nav__link { color: var(--c-soft); }
+.page-case .nav__link.is-active { color: var(--c-ink); }
+.page-case .nav-toggle__bar { background: var(--c-ink); }
+
+/* Sem hero empurrando o conteúdo, a barra fixa cobriria o topo da página. */
+.case { padding-top: 140px; }
+
+.case__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 26px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-soft);
+}
+.case__back:hover { color: var(--c-accent); }
+
+/* O reset zera a margem de `p`, então o ritmo do texto é definido aqui. */
+.case .lead { margin-top: 22px; }
+.case h2 { margin-top: 36px; margin-bottom: 14px; }
+.case p + p { margin-top: 15px; }
+.case .work-box__stack { margin-top: 30px; }
+
+/* Seta do card de projeto. O cabeçalho já era flex com `space-between` e um
+   filho só: o lugar dela sempre esteve reservado. */
+.work-box__arrow { transition: transform 0.25s var(--ease), color 0.25s var(--ease); }
+.work-box:hover .work-box__arrow { transform: translateX(4px); color: var(--c-accent); }
+
+/* --------------------------- 16. FLUXOGRAMA ----------------------------- */
+/* Os diagramas das páginas de projeto são caixas de HTML, não SVG. Num SVG o
+   texto escala junto com o desenho: num viewport de 390px o rótulo cairia
+   para uns 6px. Caixa de HTML mantém o corpo de texto no tamanho real, reflui
+   sozinha, imprime, e o leitor de tela encontra uma lista ordenada de
+   verdade em vez de um desenho mudo.
+
+   O bege é o `#DED6CB` do site de referência, até aqui citado só no comentário
+   de calibração do cinza. Ele dá ao diagrama um material próprio: mais quente
+   que o painel, sem disputar com ele. Tinta sobre o bege rende 11,55:1 e o
+   apoio 7,98:1. A separação entre o bege e o painel é 1,23:1 — parece pouco
+   isolada, mas é o mesmo recurso que o site já usa entre o card e o fundo,
+   onde a diferença é 1,16:1: sem borda e sem sombra, quem separa é o tom. */
+.flow {
+  margin: 26px 0 34px;
+}
+
+.flow__cap {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-soft);
+  margin-bottom: 14px;
+}
+
+/* Leque de entrada: o que alimenta o primeiro passo. */
+.flow__in {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.flow__in li {
+  padding: 5px 10px;
+  background: var(--surface-down);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--c-soft);
+}
+
+.flow__steps { counter-reset: none; }
+
+.flow__step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 2px 12px;
+  padding: 13px 16px;
+  background: var(--c-paper);
+}
+
+/* O conector mora nos pseudo-elementos do passo seguinte: um traço vertical
+   e a ponta da seta. São decoração — o `<ol>` é que carrega a ordem. */
+.flow__step + .flow__step { margin-top: 28px; }
+.flow__step + .flow__step::before {
+  content: "";
+  position: absolute;
+  left: 29px;
+  top: -28px;
+  width: 2px;
+  height: 21px;
+  background: var(--rule-strong);
+}
+.flow__step + .flow__step::after {
+  content: "";
+  position: absolute;
+  left: 25px;
+  top: -9px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 8px solid var(--rule-strong);
+}
+
+/* Todo conteudo do passo vive na coluna larga, e o numero ocupa a estreita
+   inteira. Sem isto, o quarto filho (a saida lateral, quando o passo tambem
+   tem caixas paralelas) era colocado pelo auto-placement na coluna de 26px
+   e quebrava uma palavra por linha. */
+.flow__step > * { grid-column: 2; }
+
+.flow__n {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--c-soft);
+}
+
+/* Peso 500 e nao 700: a hierarquia entre rotulo e nota sai do tamanho e
+   da cor, sem negrito. */
+.flow__label {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.97rem;
+  line-height: 1.35;
+  color: var(--c-ink);
+}
+
+.flow__note {
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--c-soft);
+}
+
+/* Caixas paralelas dentro de um passo, para etapa que ramifica de verdade:
+   os tres sinais do score, os tres criterios do juiz, as tres rotas de
+   parsing. Sao mais claras que o bege da caixa que as contem, entao leem
+   como encaixadas nela, e a tinta rende 14,23:1 sobre esse tom. O auto-fit
+   empilha sozinho quando a coluna fica estreita, sem media query. */
+.flow__par {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 6px;
+  margin-top: 10px;
+}
+.flow__par li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 11px;
+  background: var(--surface-up);
+}
+.flow__par-rot {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--c-ink);
+}
+.flow__par-nota {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--c-soft);
+}
+
+/* Saída lateral: o que sai do passo sem seguir adiante — reprovado, duplicata,
+   fonte bloqueada. Recuado e em tom mais fundo, para não competir com o
+   caminho principal. */
+.flow__side {
+  margin-top: 8px;
+  padding: 7px 10px;
+  background: var(--surface-down);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.45;
+  color: var(--c-soft);
+}
+
+/* A saida ganha caixa como os chips de entrada: entrada e saida sao do
+   mesmo material, e o bege fica reservado aos passos do pipeline. */
+.flow__out {
+  position: relative;
+  display: inline-block;
+  margin-top: 28px;
+  padding: 7px 10px;
+  background: var(--surface-down);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--c-soft);
+}
+.flow__out::before {
+  content: "";
+  position: absolute;
+  left: 29px;
+  top: -28px;
+  width: 2px;
+  height: 21px;
+  background: var(--rule-strong);
+}
+.flow__out::after {
+  content: "";
+  position: absolute;
+  left: 25px;
+  top: -9px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 8px solid var(--rule-strong);
+}
+
+/* Em tela estreita o número sai da coluna própria e vira linha de cima, para
+   o rótulo não ficar espremido em 200px. */
+@media (max-width: 520px) {
+  .flow__step {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .flow__step > * { grid-column: auto; }
+  .flow__n { grid-column: auto; grid-row: auto; }
+  .flow__step + .flow__step::before,
+  .flow__out::before { left: 17px; }
+  .flow__step + .flow__step::after,
+  .flow__out::after { left: 13px; }
+}
+
+/* ------------------------------ 17. GALERIA ------------------------------ */
+/* Sem JavaScript as imagens ficam empilhadas, uma embaixo da outra, e a
+   barra de controle some. O .is-live, que o JS acrescenta, e que reduz a
+   uma por vez. Assim a galeria continua inteira para quem bloqueia script
+   e para quem imprime a pagina. */
+.gal { margin: 20px 0 6px; }
+
+.gal__slide { background: var(--surface-down); }
+.gal__slide + .gal__slide { margin-top: 10px; }
+/* Toda imagem entra numa moldura 16:10, qualquer que seja o formato de
+   origem. As ja normalizadas encaixam sem sobra, e uma foto solta no futuro,
+   alta ou larga, fica inteira dentro da moldura em vez de mudar a altura da
+   galeria a cada clique. */
+.gal__slide img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: contain;
+  background: var(--surface-down);
+}
+
+/* A imagem aparece na largura da coluna de texto, menor que o painel, e so
+   amplia com um clique. O link cobre a imagem inteira e a lupa avisa. */
+.gal__zoom { position: relative; display: block; cursor: zoom-in; }
+.gal__lupa {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  background: rgba(31, 30, 30, 0.74);
+  color: #fff;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.gal__zoom:hover .gal__lupa,
+.gal__zoom:focus-visible .gal__lupa { background: var(--c-accent); color: var(--c-ink); }
+.gal__zoom:focus-visible { outline: 2px solid var(--c-accent); outline-offset: 3px; }
+
+.gal__cap {
+  padding: 10px 13px;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--c-soft);
+}
+
+.gal__bar { display: none; }
+.gal.is-live .gal__bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 12px;
+}
+/* Os slides ficam todos na mesma celula de uma grade e so um fica visivel. A
+   celula toma a altura do maior, entao a galeria nao muda de tamanho ao
+   passar de uma imagem para outra, nem quando as legendas tem comprimentos
+   diferentes. Com display:none a altura seguia o slide da vez. */
+.gal.is-live .gal__track { display: grid; }
+.gal.is-live .gal__slide {
+  grid-area: 1 / 1;
+  margin-top: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease), visibility 0s linear 0.25s;
+}
+.gal.is-live .gal__slide.is-current {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.25s var(--ease), visibility 0s;
+}
+
+/* 44px e o minimo de alvo de toque que o resto do site segue. */
+.gal__nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: var(--surface-down);
+  color: var(--c-ink);
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.gal__nav:hover { background: var(--c-deep); color: #fff; }
+
+.gal__count {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--c-soft);
+}
+
+/* No papel a navegacao nao serve, entao tudo volta a ficar empilhado. */
+@media print {
+  .gal.is-live .gal__track { display: block; }
+  .gal.is-live .gal__slide { visibility: visible; opacity: 1; }
+  .gal.is-live .gal__slide + .gal__slide { margin-top: 10px; }
+  .gal__bar { display: none !important; }
+}
+
+/* ---- janela de ampliacao da galeria ---- */
+/* Cobre a pagina inteira, acima da barra superior, que fica em z-index 100. A
+   imagem aparece na resolucao do arquivo, reduzida so o necessario para caber
+   na tela. A rolagem da pagina fica travada enquanto a janela esta aberta. */
+html.lb-aberto { overflow: hidden; }
+.lb {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 72px 28px;
+  background: rgba(31, 30, 30, 0.92);
+}
+.lb[hidden] { display: none; }
+.lb__fig {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  max-width: 100%;
+  max-height: 100%;
+}
+.lb__img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 1500px);
+  max-height: calc(100vh - 170px);
+  object-fit: contain;
+  background: var(--surface-down);
+}
+.lb__cap {
+  max-width: 780px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  text-align: center;
+  color: #E7E4E5;
+}
+.lb__btn {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  background: rgba(238, 237, 237, 0.14);
+  color: #fff;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.lb__btn:hover { background: var(--c-accent); color: var(--c-ink); }
+.lb__x { top: 14px; right: 14px; }
+.lb__nav { top: 50%; transform: translateY(-50%); }
+.lb__prev { left: 14px; }
+.lb__next { right: 14px; }
+@media (max-width: 640px) {
+  .lb { padding: 64px 12px 78px; }
+  .lb__nav { top: auto; bottom: 16px; transform: none; }
+}
+@media print { .lb { display: none !important; } }
+
+/* ------------------------ 18. NUMEROS E FAIXAS --------------------------- */
+/* Fileira de numeros logo depois da abertura da pagina de projeto. Sao quatro
+   medidas de configuracao ou de cobertura do proprio trabalho. A hierarquia
+   vem do tamanho e da cor, nao do peso: o numero e grande e o rotulo e
+   pequeno, e nenhum dos dois usa negrito. A tinta rende 12,30:1 sobre o tom
+   dos blocos e o apoio 8,50:1. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 30px 0 6px;
+}
+.stats__item {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 16px 15px 15px;
+  background: var(--surface);
+}
+.stats__n {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--c-ink);
+}
+.stats__l {
+  font-size: 0.76rem;
+  line-height: 1.4;
+  color: var(--c-soft);
+}
+@media (max-width: 640px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Faixas de fluxograma, uma por secao: titulo com filete e, embaixo, o SVG.
+   O diagrama mantem o tamanho natural e a faixa rola na horizontal quando a
+   coluna e mais estreita que ele, porque encolher ate caber deixaria o
+   rotulo ilegivel. A regiao rolavel recebe foco de teclado, senao quem nao
+   usa mouse nao chega ao resto do diagrama. */
+.strips { margin: 28px 0 32px; }
+.strip + .strip { margin-top: 30px; }
+.strip__t {
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-soft);
+}
+/* Pagina com faixas e galeria: o painel alarga ate a largura do container e
+   so a prosa continua numa coluna estreita de 688px, centrada. Um diagrama de
+   sete ou oito caixas nao cabe em 688px sem ficar ilegivel, e a galeria de
+   telas tambem ganha com a largura. Fica tudo dentro do painel claro, que e
+   o fundo sobre o qual os SVG foram desenhados. */
+.case .panel--wide { max-width: 1092px; }
+.case .panel--wide > * { max-width: 688px; margin-left: auto; margin-right: auto; }
+.case .panel--wide > .strips { max-width: none; }
+.case .panel--wide > .case__back { display: flex; }
+
+.strip__scroll { overflow-x: auto; padding-bottom: 6px; }
+/* O JS marca .has-more enquanto sobra diagrama a direita. Sem o esmaecimento,
+   uma faixa que corta no meio de uma caixa parece defeito em vez de rolagem. */
+.strip__scroll.has-more {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 64px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 64px), transparent);
+}
+.strip__scroll:focus-visible { outline: 2px solid var(--c-accent); outline-offset: 3px; }
+.strip__scroll img { display: block; max-width: none; height: auto; margin: 0 auto; }
+
+@media print {
+  .strip__scroll { overflow: visible; }
+  .strip__scroll img { max-width: 100%; }
+}
+
+/* ----------------------------- 19. IMPRESSÃO ----------------------------- */
+@media print {
+  .site-header, .to-top, .hero, .about__social,
+  .photo-band::before, .photo-band__veil { display: none !important; }
+  body { background: #fff; color: #000; }
+  .panel, .work-box, .timeline-text, .skill-card, .contact__item,
+  .section-alt, .site-footer, .photo-band { background: #fff; }
+
+  /* A faixa da experiência é clara no papel, então a tipografia que fora
+     invertida para a fotografia volta ao preto. */
+  .photo-band,
+  .photo-band .title-a,
+  .photo-band .timeline-date,
+  .photo-band .timeline-text h3,
+  .photo-band .timeline-text h4,
+  .photo-band .timeline-text p { color: #000; }
+  .photo-band .timeline-text,
+  .photo-band .timeline-text__head { background: #fff; }
+}

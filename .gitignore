@@ -1,0 +1,23 @@
+# Credenciais. Nunca versionar.
+**/chaves.json
+*.key
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+*.egg-info/
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini

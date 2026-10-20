@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel macroeconômico, Augusto Mohr</title>
+<meta name="description" content="Trinta e oito séries de cinco fontes públicas, derivadas na coleta e validadas contra a série oficial, com síntese por tema ancorada no banco.">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Painel macroeconômico, Augusto Mohr">
+<meta property="og:description" content="Trinta e oito séries de cinco fontes públicas, derivadas na coleta e validadas contra a série oficial, com síntese por tema ancorada no banco.">
+
+<link rel="alternate" hreflang="pt-BR" href="painel-macro.html">
+<link rel="alternate" hreflang="en" href="../en/projetos/painel-macro.html">
+<link rel="alternate" hreflang="x-default" href="painel-macro.html">
+
+<link rel="icon" href="../assets/img/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../assets/img/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body class="page-case">
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
+
+<header class="site-header" id="header">
+  <div class="container header__inner">
+    <a class="brand" href="../index.html">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__text">Augusto Mohr</span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Navegação principal">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="../index.html" data-text="Início">Início</a></li>
+        <li><a class="nav__link" href="../index.html#about" data-text="Sobre">Sobre</a></li>
+        <li><a class="nav__link" href="../index.html#experience" data-text="Experiência">Experiência</a></li>
+        <li><a class="nav__link is-active" href="../index.html#projects" data-text="Projetos">Projetos</a></li>
+        <li><a class="nav__link" href="../index.html#contact" data-text="Contato">Contato</a></li>
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a class="lang-switch" href="../en/projetos/painel-macro.html" hreflang="en" lang="en" aria-label="Switch to English">EN</a>
+
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="nav" aria-label="Abrir menu">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section case">
+    <div class="container">
+      <div class="panel panel--narrow panel--wide reveal">
+
+        <a class="case__back" href="../index.html#projects">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+          Projetos
+        </a>
+
+        <div class="title-box">
+          <h1 class="title-a">Painel macroeconômico</h1>
+          <div class="line-mf" aria-hidden="true"></div>
+        </div>
+
+        <p class="lead">Painel macroeconômico em FastAPI com trinta e oito séries de cinco fontes públicas guardadas num DuckDB, cruzadas com o acervo de notícias já classificadas. Cada série derivada é validada contra a série oficial, e a síntese por tema cita apenas números calculados pelo banco.</p>
+
+        <ul class="stats">
+          <li class="stats__item"><span class="stats__n">38</span><span class="stats__l">séries macroeconômicas em cinco temas</span></li>
+          <li class="stats__item"><span class="stats__n">5</span><span class="stats__l">fontes públicas, SGS, IBGE, FRED, CONAB e MAPA</span></li>
+          <li class="stats__item"><span class="stats__n">6</span><span class="stats__l">etapas idempotentes, cada uma executável sozinha</span></li>
+          <li class="stats__item"><span class="stats__n">0,005</span><span class="stats__l">ponto percentual de diferença máxima ao reproduzir o IPCA de 12 meses</span></li>
+        </ul>
+
+        <h2 class="title-s">Ingestão e validação</h2>
+        <figure class="strips">
+          <div class="strip">
+            <h3 class="strip__t">INGESTÃO</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="INGESTÃO">
+              <img src="../assets/img/fluxos/macro-ing-pt.svg" alt="Fluxograma da ingestão: cinco fontes públicas, coleta com derivação, validação contra a série oficial e gravação no DuckDB, com um desvio para a série que não confere." width="684" height="167" loading="lazy">
+            </div>
+          </div>
+          <div class="strip">
+            <h3 class="strip__t">SÍNTESE</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="SÍNTESE">
+              <img src="../assets/img/fluxos/macro-sin-pt.svg" alt="Fluxograma da síntese: a estatística é calculada no banco, o tema de cada notícia é atribuído, o modelo narra os números prontos e o painel somente leitura recebe o texto e os gráficos." width="604" height="223" loading="lazy">
+            </div>
+          </div>
+        </figure>
+        <p>As séries cobrem preços, crédito, setor externo, atividade e contas públicas. As derivações são calculadas na ingestão, como o acumulado de doze meses, a variação interanual e a soma móvel, e cada uma é conferida contra a série oficial publicada sempre que ela existe. O IPCA acumulado reconstruído a partir da série mensal fica a no máximo cerca de 0,005 ponto percentual do oficial ao longo de 135 meses, e a mesma conferência vale para IGP-M, INCC e IPA.</p>
+        <p>O pipeline tem seis etapas idempotentes, cada uma executável sozinha, e o painel em FastAPI com Jinja2 não dispara coleta, apenas lê o que o pipeline gravou, o que mantém a página rápida e o custo previsível.</p>
+        <h2 class="title-s">Síntese por tema</h2>
+        <p>As estatísticas são calculadas no DuckDB e entregues prontas ao modelo, que narra a leitura de cada indicador em nível, direção e período em foco sem fazer contas. Cada afirmação do texto carrega o valor e a data de onde saiu, rastreáveis até a série e o período, e o gráfico de cada indicador acompanha a leitura.</p>
+        <p>A síntese de cada tema cruza essa leitura com as notícias classificadas que tratam do mesmo assunto. Como cada dado costuma ser divulgado semanas depois do período a que se refere e as notícias o comentam na data da divulgação, a junção usa o período de referência da série e janelas de último mês e última semana sobre a data de publicação, para que cada número apareça ao lado das notícias que de fato o discutem.</p>
+
+        <p class="work-box__stack">Python · DuckDB · FastAPI · Jinja2 · Groq · Docker</p>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer__inner">
+    <div>
+      <p class="footer__copy">&copy; <span id="year">2026</span> Augusto Mohr. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="Voltar ao topo">
+  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+</button>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

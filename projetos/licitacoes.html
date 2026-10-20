@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monitor de licitações, Augusto Mohr</title>
+<meta name="description" content="Vinte portais públicos de compras consolidados em arquitetura Medallion, com nota de relevância por três sinais.">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Monitor de licitações, Augusto Mohr">
+<meta property="og:description" content="Vinte portais públicos de compras consolidados em arquitetura Medallion, com nota de relevância por três sinais.">
+
+<link rel="alternate" hreflang="pt-BR" href="licitacoes.html">
+<link rel="alternate" hreflang="en" href="../en/projetos/licitacoes.html">
+<link rel="alternate" hreflang="x-default" href="licitacoes.html">
+
+<link rel="icon" href="../assets/img/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../assets/img/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body class="page-case">
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
+
+<header class="site-header" id="header">
+  <div class="container header__inner">
+    <a class="brand" href="../index.html">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__text">Augusto Mohr</span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Navegação principal">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="../index.html" data-text="Início">Início</a></li>
+        <li><a class="nav__link" href="../index.html#about" data-text="Sobre">Sobre</a></li>
+        <li><a class="nav__link" href="../index.html#experience" data-text="Experiência">Experiência</a></li>
+        <li><a class="nav__link is-active" href="../index.html#projects" data-text="Projetos">Projetos</a></li>
+        <li><a class="nav__link" href="../index.html#contact" data-text="Contato">Contato</a></li>
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a class="lang-switch" href="../en/projetos/licitacoes.html" hreflang="en" lang="en" aria-label="Switch to English">EN</a>
+
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="nav" aria-label="Abrir menu">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section case">
+    <div class="container">
+      <div class="panel panel--narrow panel--wide reveal">
+
+        <a class="case__back" href="../index.html#projects">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+          Projetos
+        </a>
+
+        <div class="title-box">
+          <h1 class="title-a">Monitor de licitações</h1>
+          <div class="line-mf" aria-hidden="true"></div>
+        </div>
+
+        <p class="lead">Mapeia as licitações públicas em que a empresa pode concorrer e mede o quanto cada uma se aproxima dos serviços que ela oferece. Um pipeline diário no Airflow varre 20 portais públicos de compras, organiza tudo em arquitetura Medallion no Postgres e dá a cada processo uma nota de relevância a partir de três sinais independentes. A entrega é uma planilha por e-mail e um painel em FastAPI.</p>
+
+        <ul class="stats">
+          <li class="stats__item"><span class="stats__n">20</span><span class="stats__l">portais públicos de compras coletados em paralelo</span></li>
+          <li class="stats__item"><span class="stats__n">3</span><span class="stats__l">sinais combinados na nota, com pesos distintos</span></li>
+          <li class="stats__item"><span class="stats__n">12</span><span class="stats__l">verticais de negócio classificadas por LLM</span></li>
+          <li class="stats__item"><span class="stats__n">3</span><span class="stats__l">chaves de deduplicação na camada bronze</span></li>
+        </ul>
+
+        <h2 class="title-s">Coleta e camadas</h2>
+        <figure class="strips">
+          <div class="strip">
+            <h3 class="strip__t">COLETA E CAMADAS</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="COLETA E CAMADAS">
+              <img src="../assets/img/fluxos/licitacoes-cam-pt.svg" alt="Fluxograma da coleta e das camadas: portais públicos coletados em paralelo, bronze, silver e gold no Medallion, com um desvio para o portal fora do ar." width="912" height="200" loading="lazy">
+            </div>
+          </div>
+          <div class="strip">
+            <h3 class="strip__t">SCORE E ENTREGA</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="SCORE E ENTREGA">
+              <img src="../assets/img/fluxos/licitacoes-sco-pt.svg" alt="Fluxograma do score e da entrega: três sinais combinados com pesos distintos numa fila de GPU, corte em 0,5, classificação em doze verticais, e saída por e-mail diário e por painel em FastAPI." width="665" height="233" loading="lazy">
+            </div>
+          </div>
+        </figure>
+        <p>Cada portal tem um coletor próprio, e a regra de disparo do Airflow deixa um portal fora do ar falhar sozinho e gerar alerta sem travar os demais. Os coletores levantam erro explícito diante de página de bloqueio, status de erro ou falha de rede persistente, com backoff, e tratam lista vazia como resultado legítimo.</p>
+        <p>A camada bronze é uma landing imutável que guarda o JSON original ao lado do registro tratado, e cada registro recebe uma impressão digital derivada do identificador de origem. A deduplicação usa três chaves, o hash do conteúdo, o identificador unificado e o par formado pela fonte e o identificador nativo, o que impede que uma mudança de parser faça registros antigos entrarem como novos. A silver reduz tudo a poucas colunas tipadas, escolhendo a melhor data e o melhor valor entre os que cada fonte oferece, e a gold aplica exclusão por palavra inteira, baixa os anexos em PDF e reaplica o filtro sobre o texto extraído.</p>
+        <h2 class="title-s">Nota de relevância e entrega</h2>
+        <p>A nota de relevância combina, com pesos distintos, palavras-chave do domínio, um classificador zero-shot mDeBERTa em GPU e a avaliação do gpt-oss-120b via Groq, que tem o maior peso. O classificador roda numa fila do Celery dedicada a um worker com GPU, e quando o texto é curto demais para o LLM a nota usa os dois primeiros sinais e é renormalizada.</p>
+        <p>O mesmo modelo classifica cada objeto em uma de doze verticais de negócio, em lotes de dez itens que amortizam o prompt de sistema, e um limitador conta os tokens consumidos por chave numa janela deslizante de sessenta segundos para respeitar a cota diária.</p>
+        <p>A entrega é uma planilha por e-mail e um painel em FastAPI com os filtros na query string, o que torna qualquer recorte compartilhável por URL. O painel também permite baixar a base em três níveis, que correspondem às camadas do Medallion.</p>
+
+        <h2 class="title-s">Galeria</h2>
+        <section class="gal">
+          <ul class="gal__track">
+            <li class="gal__slide">
+              <a class="gal__zoom" href="../assets/img/projetos/licitacoes/04-funil.png" target="_blank" rel="noopener" aria-label="Ampliar imagem">
+                <img src="../assets/img/projetos/licitacoes/04-funil.png" alt="O funil do Medallion, camada por camada, da coleta bruta ao que passa do corte de relevância." loading="lazy">
+                <svg class="icon gal__lupa" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/><path d="M11 8.5v5"/><path d="M8.5 11h5"/></svg>
+              </a>
+              <p class="gal__cap">O funil do Medallion, camada por camada, da coleta bruta ao que passa do corte de relevância.</p>
+            </li>
+            <li class="gal__slide">
+              <a class="gal__zoom" href="../assets/img/projetos/licitacoes/05-score.png" target="_blank" rel="noopener" aria-label="Ampliar imagem">
+                <img src="../assets/img/projetos/licitacoes/05-score.png" alt="Distribuição da nota combinada em escala logarítmica, com o corte do e-mail em 0,35 e o corte de relevância em 0,5." loading="lazy">
+                <svg class="icon gal__lupa" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/><path d="M11 8.5v5"/><path d="M8.5 11h5"/></svg>
+              </a>
+              <p class="gal__cap">Distribuição da nota combinada em escala logarítmica, com o corte do e-mail em 0,35 e o corte de relevância em 0,5.</p>
+            </li>
+          </ul>
+          <div class="gal__bar">
+            <button class="gal__nav" type="button" data-gal="prev" aria-label="Imagem anterior">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+            </button>
+            <p class="gal__count"><span data-gal="now">1</span> / <span>2</span></p>
+            <button class="gal__nav" type="button" data-gal="next" aria-label="Próxima imagem">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <p class="work-box__stack">Apache Airflow · mDeBERTa zero-shot em GPU · Groq · PostgreSQL · Celery · Object storage · FastAPI</p>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer__inner">
+    <div>
+      <p class="footer__copy">&copy; <span id="year">2026</span> Augusto Mohr. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="Voltar ao topo">
+  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+</button>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

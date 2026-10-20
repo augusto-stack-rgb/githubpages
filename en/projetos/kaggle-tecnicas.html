@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Techniques of top Kaggle competitors, Augusto Mohr</title>
+<meta name="description" content="Public code from the winners of Kaggle competitions analysed in bulk by language models and turned into a queryable database of machine learning techniques.">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Techniques of top Kaggle competitors, Augusto Mohr">
+<meta property="og:description" content="Public code from the winners of Kaggle competitions analysed in bulk by language models and turned into a queryable database of machine learning techniques.">
+
+<link rel="alternate" hreflang="pt-BR" href="../../projetos/kaggle-tecnicas.html">
+<link rel="alternate" hreflang="en" href="kaggle-tecnicas.html">
+<link rel="alternate" hreflang="x-default" href="../../projetos/kaggle-tecnicas.html">
+
+<link rel="icon" href="../../assets/img/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/img/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+
+<body class="page-case">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" id="header">
+  <div class="container header__inner">
+    <a class="brand" href="../index.html">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__text">Augusto Mohr</span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Main navigation">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="../index.html" data-text="Home">Home</a></li>
+        <li><a class="nav__link" href="../index.html#about" data-text="About">About</a></li>
+        <li><a class="nav__link" href="../index.html#experience" data-text="Experience">Experience</a></li>
+        <li><a class="nav__link is-active" href="../index.html#projects" data-text="Projects">Projects</a></li>
+        <li><a class="nav__link" href="../index.html#contact" data-text="Contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a class="lang-switch" href="../../projetos/kaggle-tecnicas.html" hreflang="pt-BR" lang="pt-BR" aria-label="Mudar para português">PT</a>
+
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="nav" aria-label="Open menu">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section case">
+    <div class="container">
+      <div class="panel panel--narrow panel--wide reveal">
+
+        <a class="case__back" href="../index.html#projects">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+          Projects
+        </a>
+
+        <div class="title-box">
+          <h1 class="title-a">Techniques of top Kaggle competitors</h1>
+          <div class="line-mf" aria-hidden="true"></div>
+        </div>
+
+        <p class="lead">Collects the machine learning techniques used by the winners of Kaggle competitions, processing in bulk, with language models, the public code of the teams at the top of the leaderboard. Each notebook becomes an analysis in four numbered sections and then tables of techniques, of contrasts between common practice and the expert's choice and a glossary, with the output validated with Pydantic and checked against the source text.</p>
+
+        <ul class="stats">
+          <li class="stats__item"><span class="stats__n">745</span><span class="stats__l">competitions with collected metadata</span></li>
+          <li class="stats__item"><span class="stats__n">3,508</span><span class="stats__l">notebooks with extracted code</span></li>
+          <li class="stats__item"><span class="stats__n">2,720</span><span class="stats__l">analyses written by an LLM</span></li>
+          <li class="stats__item"><span class="stats__n">19,185</span><span class="stats__l">catalogued techniques</span></li>
+        </ul>
+
+        <h2 class="title-s">Collection and analysis</h2>
+        <figure class="strips">
+          <div class="strip">
+            <h3 class="strip__t">EXTRACTION</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="EXTRACTION">
+              <img src="../../assets/img/fluxos/kaggle-ext-en.svg" alt="Extraction flowchart: top-team notebooks and the most upvoted ones, collection, LLM analysis in four sections, structured extraction validated in Pydantic, with bypasses for a large notebook and for invalid output." width="808" height="162" loading="lazy">
+            </div>
+          </div>
+          <div class="strip">
+            <h3 class="strip__t">DATABASE AND QUALITY</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="DATABASE AND QUALITY">
+              <img src="../../assets/img/fluxos/kaggle-bas-en.svg" alt="Database flowchart: extraction yields techniques, contrasts and a glossary, the audit checks the rows against the source text and the base stays resumable by checkpoint." width="591" height="276" loading="lazy">
+            </div>
+          </div>
+        </figure>
+        <p>Competition metadata comes from the Kaggle API and notebook code is collected with Selenium. The corpus brings together the notebooks of the teams at the top of the leaderboard and the most voted ones in each competition, which gives the two sides the contrast step compares.</p>
+        <p>Each notebook goes whole to an LLM, together with the competition description, and comes back as an analysis in four numbered sections. The numbering is imposed by the prompt and is what the next step uses to cut the text.</p>
+        <h2 class="title-s">Structuring and quality</h2>
+        <p>A single call per analysis turns the prose into tables, with the output validated with Pydantic. The ML pipeline stage is an enum listed explicitly in the prompt, and a normaliser fixes the predictable variants before validation. Processing runs on a pool of ten slots with key rotation across providers and resumes from a checkpoint for each notebook.</p>
+        <p>A contrast is only recorded when the analysis itself describes both approaches, the one most competitors used and the one the winning team adopted, which keeps the model from filling in common practice by guesswork. An audit script checks the extracted rows against the source text and produces a report.</p>
+        <h2 class="title-s">The database</h2>
+        <p>The database holds 19,185 techniques catalogued from 2,720 analyses, covering 2,528 of the 2,603 notebooks with an ML pipeline. Each technique carries its pipeline stage, a rarity grade and, when the text states it, the gain obtained and the number that goes with it.</p>
+
+        <p class="work-box__stack">Python · pandas · Kaggle API · Selenium · Groq · Pydantic · Jupyter · matplotlib</p>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer__inner">
+    <div>
+      <p class="footer__copy">&copy; <span id="year">2026</span> Augusto Mohr. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">
+  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+</button>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

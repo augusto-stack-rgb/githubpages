@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG clássico local e RAG por indexação com Claude, Augusto Mohr</title>
+<meta name="description" content="Dois RAGs sobre o mesmo acervo interno, um clássico e local que responde citando a origem e outro por indexação que diz o que existe e onde está.">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="RAG clássico local e RAG por indexação com Claude, Augusto Mohr">
+<meta property="og:description" content="Dois RAGs sobre o mesmo acervo interno, um clássico e local que responde citando a origem e outro por indexação que diz o que existe e onde está.">
+
+<link rel="alternate" hreflang="pt-BR" href="atlas.html">
+<link rel="alternate" hreflang="en" href="../en/projetos/atlas.html">
+<link rel="alternate" hreflang="x-default" href="atlas.html">
+
+<link rel="icon" href="../assets/img/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../assets/img/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body class="page-case">
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
+
+<header class="site-header" id="header">
+  <div class="container header__inner">
+    <a class="brand" href="../index.html">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__text">Augusto Mohr</span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Navegação principal">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="../index.html" data-text="Início">Início</a></li>
+        <li><a class="nav__link" href="../index.html#about" data-text="Sobre">Sobre</a></li>
+        <li><a class="nav__link" href="../index.html#experience" data-text="Experiência">Experiência</a></li>
+        <li><a class="nav__link is-active" href="../index.html#projects" data-text="Projetos">Projetos</a></li>
+        <li><a class="nav__link" href="../index.html#contact" data-text="Contato">Contato</a></li>
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a class="lang-switch" href="../en/projetos/atlas.html" hreflang="en" lang="en" aria-label="Switch to English">EN</a>
+
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="nav" aria-label="Abrir menu">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section case">
+    <div class="container">
+      <div class="panel panel--narrow panel--wide reveal">
+
+        <a class="case__back" href="../index.html#projects">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+          Projetos
+        </a>
+
+        <div class="title-box">
+          <h1 class="title-a">RAG clássico local e RAG por indexação com Claude</h1>
+          <div class="line-mf" aria-hidden="true"></div>
+        </div>
+
+        <p class="lead">Dois sistemas de RAG sobre o mesmo acervo interno de relatórios e estudos. O RAG clássico roda inteiramente na infraestrutura própria e responde perguntas citando documento, setor e data de cada trecho, e o RAG por indexação consulta um catálogo de fichas do compartilhamento de arquivos para responder o que existe sobre um assunto, de que fonte e de quando.</p>
+
+        <ul class="stats">
+          <li class="stats__item"><span class="stats__n">30</span><span class="stats__l">perguntas no gabarito de avaliação do RAG</span></li>
+          <li class="stats__item"><span class="stats__n">4</span><span class="stats__l">bases entre as quais cada pergunta é roteada</span></li>
+          <li class="stats__item"><span class="stats__n">16</span><span class="stats__l">passos no máximo no laço de consulta do índice</span></li>
+          <li class="stats__item"><span class="stats__n">4</span><span class="stats__l">níveis de curadoria atribuídos a cada arquivo</span></li>
+        </ul>
+
+        <h2 class="title-s">RAG clássico local</h2>
+        <figure class="strips">
+          <div class="strip">
+            <h3 class="strip__t">INGESTÃO</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="INGESTÃO">
+              <img src="../assets/img/fluxos/atlas-rag-ing-pt.svg" alt="Fluxograma da ingestão do RAG: documentos, conversão de PDF para Markdown com passada de visão, fatiamento em chunks, embedding com bge-m3 e gravação no pgvector." width="760" height="75" loading="lazy">
+            </div>
+          </div>
+          <div class="strip">
+            <h3 class="strip__t">CONSULTA</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="CONSULTA">
+              <img src="../assets/img/fluxos/atlas-rag-con-pt.svg" alt="Fluxograma da consulta do RAG: pergunta, fila, roteamento entre quatro bases, busca, seleção, geração em streaming e registro, com um desvio determinístico para perguntas sobre o próprio acervo." width="1143" height="178" loading="lazy">
+            </div>
+          </div>
+          <div class="strip">
+            <h3 class="strip__t">AVALIAÇÃO</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="AVALIAÇÃO">
+              <img src="../assets/img/fluxos/atlas-rag-ava-pt.svg" alt="Fluxograma da avaliação do RAG: trinta perguntas, coleta, JSONL, pontuação com Ragas por um juiz neutro, acerto de roteamento contado direto, MLflow e tabela de comparação entre modelos." width="1294" height="154" loading="lazy">
+            </div>
+          </div>
+        </figure>
+        <p>Pensado para documentos sensíveis que não podem sair da empresa, o RAG roda com todos os modelos na infraestrutura própria. O parsing converte cada PDF em Markdown com o opendataloader, e um modelo de visão local descreve imagens e gráficos em texto, inserindo a descrição no ponto exato da página de onde ela saiu. O chunking corta nos títulos, em trechos de 40 a 220 palavras com 40 palavras de sobreposição entre vizinhos, nunca parte tabelas ou imagens descritas e descarta sumários. O bge-m3 gera os embeddings e o pgvector guarda cada trecho com documento, setor e data.</p>
+        <p>Na consulta, as perguntas entram numa fila e são atendidas uma por vez, já que os modelos locais compartilham a mesma GPU. Um modelo roteia cada pergunta para uma das quatro bases, a recuperação híbrida une a busca vetorial por similaridade de cosseno à busca por palavras-chave, uma etapa de seleção descarta o que não é comparável e anexa um aviso temporal, e o Qwen3.6 de 35B escreve a resposta em streaming com citação numerada. Perguntas sobre o próprio acervo seguem um caminho determinístico e são respondidas sem busca.</p>
+        <p>Um framework de avaliação roda um gabarito de trinta perguntas, com a base correta conhecida de antemão, contra cada combinação de modelo, parâmetros de chunking e prompts de sistema. As respostas recebem notas de fidelidade, relevância e precisão do Ragas, dadas por um juiz neutro, o gemma3 de 27B, e o acerto de roteamento é contado diretamente. Cada execução vai para o MLflow com um span por etapa, mostrando onde cada configuração perde qualidade e onde perde tempo, e a avaliação roda em duas fases para que o modelo avaliado e o juiz não ocupem a GPU ao mesmo tempo.</p>
+        <h2 class="title-s">RAG por indexação</h2>
+        <figure class="strips">
+          <div class="strip">
+            <h3 class="strip__t">INGESTÃO</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="INGESTÃO">
+              <img src="../assets/img/fluxos/atlas-indice-ing-pt.svg" alt="Fluxograma da ingestão do índice: compartilhamento de arquivos, inventário, sondagem, curadoria, extração exata sem modelo e descrição de imagem em lote, até as fichas em Markdown." width="1112" height="178" loading="lazy">
+            </div>
+          </div>
+          <div class="strip">
+            <h3 class="strip__t">CONSULTA</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="CONSULTA">
+              <img src="../assets/img/fluxos/atlas-indice-con-pt.svg" alt="Fluxograma da consulta do índice: entradas por web e MCP, busca BM25, laço de até dezesseis passos com ferramentas, modelo local, resposta com o print do slide e registro em SQLite." width="1099" height="130" loading="lazy">
+            </div>
+          </div>
+        </figure>
+        <p>O índice responde que arquivos existem sobre um assunto, de que fonte e de quando, consultando um catálogo de fichas em vez de recuperar trechos por similaridade vetorial. A abordagem combina com o acervo, em que a maior parte do material é tabular e o significado de uma planilha está no nome do arquivo, na fonte e no cabeçalho, exatamente o que a ficha guarda.</p>
+        <p>O inventário percorre o compartilhamento de rede com checkpoint e uma lista de pastas ignoradas, e a sondagem amostra cada arquivo de acordo com o tipo, lendo o separador e as primeiras linhas de um CSV, as abas de uma planilha, o texto de apresentações e das primeiras páginas de PDF e o código de notebooks. A curadoria classifica cada arquivo em quatro níveis, com veredito auditável em TSV, e a extração é incremental, de modo que um arquivo só é reprocessado quando muda ou quando o extrator muda de versão. Um modelo de visão descreve as imagens uma única vez, em lote, transcrevendo o que está escrito em vez de estimar.</p>
+        <p>Cada arquivo vira uma ficha em Markdown com fonte, confidencialidade, período, colunas, amostra e nível de curadoria, organizada em coleções e grupos. Como o conteúdo não precisa ficar dentro da infraestrutura, o Claude navega o catálogo com ferramentas, decidindo o que buscar, abrir e ler em até dezesseis passos, e responde com o caminho do arquivo e o slide que sustenta cada número. A busca é BM25 com peso por campo, que favorece o título e depois o caminho, a fonte e as colunas, e cada pergunta e cada passo ficam registrados em SQLite.</p>
+        <p>O índice é servido por um servidor MCP para agentes e por uma página web para pessoas, que também documenta os modos de falha medidos contra um gabarito de vinte perguntas conferido arquivo por arquivo.</p>
+
+        <p class="work-box__stack">pgvector · bge-m3 · VLM e LLM locais · Claude · PostgreSQL · opendataloader · Ragas · MLflow · MCP · FastAPI</p>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer__inner">
+    <div>
+      <p class="footer__copy">&copy; <span id="year">2026</span> Augusto Mohr. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="Voltar ao topo">
+  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+</button>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>
