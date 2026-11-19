@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel de LLMOps e governança de IA, Augusto Mohr</title>
+<meta name="description" content="Painel interno que mede cada chamada de modelo de linguagem da empresa, audita prompts e respostas, inventaria riscos de cada integração e acompanha um agente que corrige falhas do Airflow.">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Painel de LLMOps e governança de IA, Augusto Mohr">
+<meta property="og:description" content="Painel interno que mede cada chamada de modelo de linguagem da empresa, audita prompts e respostas, inventaria riscos de cada integração e acompanha um agente que corrige falhas do Airflow.">
+
+<link rel="alternate" hreflang="pt-BR" href="llmops.html">
+<link rel="alternate" hreflang="en" href="../en/projetos/llmops.html">
+<link rel="alternate" hreflang="x-default" href="llmops.html">
+
+<link rel="icon" href="../assets/img/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../assets/img/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body class="page-case">
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
+
+<header class="site-header" id="header">
+  <div class="container header__inner">
+    <a class="brand" href="../index.html">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__text">Augusto Mohr</span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Navegação principal">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="../index.html" data-text="Início">Início</a></li>
+        <li><a class="nav__link" href="../index.html#about" data-text="Sobre">Sobre</a></li>
+        <li><a class="nav__link" href="../index.html#experience" data-text="Experiência">Experiência</a></li>
+        <li><a class="nav__link is-active" href="../index.html#projects" data-text="Projetos">Projetos</a></li>
+        <li><a class="nav__link" href="../index.html#contact" data-text="Contato">Contato</a></li>
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a class="lang-switch" href="../en/projetos/llmops.html" hreflang="en" lang="en" aria-label="Switch to English">EN</a>
+
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="nav" aria-label="Abrir menu">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section case">
+    <div class="container">
+      <div class="panel panel--narrow panel--wide reveal">
+
+        <a class="case__back" href="../index.html#projects">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+          Projetos
+        </a>
+
+        <div class="title-box">
+          <h1 class="title-a">Painel de LLMOps e governança de IA</h1>
+          <div class="line-mf" aria-hidden="true"></div>
+        </div>
+
+        <p class="lead">Painel interno que acompanha todo uso de modelo de linguagem da empresa, serviço por serviço: quantas chamadas, quanto erro e de que tipo, quanto demora, quanto ocupa da GPU e das cotas, o que entrou e o que saiu de cada modelo e que riscos cada integração carrega. É também a tela de governança do agente que atende a empresa pelo Teams e da rotina em que um agente corrige sozinho as falhas do Airflow.</p>
+
+        <ul class="stats">
+          <li class="stats__item"><span class="stats__n">11</span><span class="stats__l">serviços instrumentados, de DAGs a aplicações</span></li>
+          <li class="stats__item"><span class="stats__n">6</span><span class="stats__l">provedores medidos, entre modelos locais e APIs</span></li>
+          <li class="stats__item"><span class="stats__n">9</span><span class="stats__l">telas, de uso e infraestrutura a avaliação de agente</span></li>
+          <li class="stats__item"><span class="stats__n">~1 ms</span><span class="stats__l">de custo da telemetria em cada chamada</span></li>
+        </ul>
+
+        <h2 class="title-s">Por que existe</h2>
+        <p>Cada serviço chamava o próprio modelo, entre modelos locais servidos pelo Ollama e APIs como Groq, Claude, Gemini e Mistral, e o único rastro era o log de cada um. Perguntas simples ficavam sem resposta: que serviço mais ocupa a GPU, quantas vezes uma chave bateu no limite de cota, se uma classificação ficou mais lenta, o que exatamente foi mandado para um provedor externo. O painel junta tudo numa tela sem exigir que os serviços mudem de arquitetura, bastando envolver a chamada ao modelo numa função da biblioteca de telemetria.</p>
+
+        <h2 class="title-s">Coleta</h2>
+        <figure class="strips">
+          <div class="strip">
+            <h3 class="strip__t">POR CHAMADA</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="POR CHAMADA">
+              <img src="../assets/img/fluxos/llmops-col-pt.svg" alt="Fluxograma da coleta por chamada: o serviço chama o modelo dentro de medir(), a biblioteca mede tempo, tokens e cota, mascara dados pessoais e classifica o erro, um envio em lote assíncrono grava no Postgres e o painel agrega." loading="lazy">
+            </div>
+          </div>
+          <div class="strip">
+            <h3 class="strip__t">FONTES EXISTENTES</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="FONTES EXISTENTES">
+              <img src="../assets/img/fluxos/llmops-fon-pt.svg" alt="Fluxograma das fontes existentes: um coletor a cada 15 minutos lê logs do Airflow no object storage, metadados de tasks e de GPU e os schemas do agente, e o painel só lê essas fontes." loading="lazy">
+            </div>
+          </div>
+        </figure>
+        <p>A biblioteca de telemetria é um único arquivo Python só com biblioteca padrão, com um espelho em Node para o serviço que não é Python. Um gerenciador de contexto envolve a chamada e registra serviço, tarefa, provedor, modelo, o nome da chave usada (nunca o segredo), status, duração, tempo até o primeiro token, tokens de entrada e saída, cota restante lida dos cabeçalhos de rate limit e, dentro do Airflow, o run e a task. A exceção é classificada em tipos como limite de tokens por minuto ou por dia, chave inválida, timeout, erro 5xx e falta de memória, registrada e relançada sem mudar o comportamento do serviço.</p>
+        <p>O envio acontece em lote numa thread separada, de modo que o serviço nunca espera pelo painel, e se o painel estiver fora do ar o registro é descartado e o serviço segue normalmente. Metaprompt, entrada e resposta são guardados com corte de tamanho, mascarados duas vezes, na biblioteca e na ingestão, para CPF, CNPJ, e-mail, telefone e segredos, e apagados depois de catorze dias. Cada serviço leva uma cópia literal da biblioteca, porque o build de cada um só enxerga a própria pasta, e um script de sincronização acusa cópia divergente.</p>
+        <p>Além das chamadas, um coletor lê a cada quinze minutos o que já existia: os logs do Airflow no object storage, com os erros de LLM classificados, os metadados das tasks, as métricas de GPU, a contagem de linhas gravadas por tabela e, ao vivo, os schemas do agente e o grafo de memória.</p>
+
+        <h2 class="title-s">O que o painel mostra</h2>
+        <p><strong>Uso.</strong> Chamadas e erros por dia separados entre modelo local e APIs externas, execuções e duração das DAGs que usam LLM, latência, p95, tempo até o primeiro token e cota por chave. Uma chave revogada que continuava configurada, por exemplo, deixou de ser um erro perdido no log e passou a aparecer como uma série de erros de chave inválida com o nome da chave.</p>
+        <p><strong>Infraestrutura.</strong> Ocupação da GPU por hora e por serviço, cruzando a utilização da placa com as janelas em que cada serviço chamou o modelo local, uso da GPU fora de qualquer serviço conhecido e linhas gravadas por dia em cada tabela, para notar uma pipeline que parou de escrever.</p>
+        <p><strong>Governança.</strong> Um inventário de riscos levantado lendo o código de cada integração: onde roda, que modelo usa, que dado envia, se aceita texto livre do usuário e portanto está exposta a injeção de prompt, que ferramentas o modelo tem e quem pode disparar. Cada risco aponta o arquivo e a linha de onde saiu, o que transforma LGPD e segurança numa lista de correções.</p>
+        <p><strong>Respostas.</strong> Auditoria do que entra e sai dos modelos, navegando de pipeline para run, de run para chamada e da chamada para o metaprompt, a entrada e a resposta inteiros, já mascarados. Cada versão de metaprompt fica registrada por hash, então dá para ver quando o prompt de uma DAG mudou e se a resposta mudou junto.</p>
+        <p><strong>Agentes e memória.</strong> Governança do agente do Teams: conversas, mensagens e custo equivalente por dia, decisões da triagem em grupo, pico de uso por pessoa contra o limite e o contexto de cada resposta camada a camada, com os tokens de configuração, metaprompt, contexto do chat, ferramentas, histórico e saída. Junto vêm o explorador do grafo de memória, em three.js com d3-force, e o relatório do juiz noturno que avalia as respostas do agente.</p>
+        <p>Cada tela também sai em texto puro, com um índice em <code>/llms.txt</code>, para que um agente leia o painel com as mesmas regras de privacidade da tela.</p>
+
+        <h2 class="title-s">Autocorreção do Airflow</h2>
+        <figure class="strips">
+          <div class="strip">
+            <h3 class="strip__t">AUTOCORREÇÃO</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="AUTOCORREÇÃO">
+              <img src="../assets/img/fluxos/llmops-aut-pt.svg" alt="Fluxograma da autocorreção: falhas do Airflow lidas toda manhã, agrupadas por DAG, task e assinatura do erro, analisadas pelo Claude, classificadas e convertidas em um pull request por dia, com perguntas ao time respondidas no painel." loading="lazy">
+            </div>
+          </div>
+        </figure>
+        <p>Uma DAG lê as falhas do Airflow toda manhã, agrupa as ocorrências em problemas por DAG, task e assinatura do erro e pede ao Claude a análise de cada um. O problema é classificado como já corrigido, externo, cascata de outra falha ou incerto, e o que tem correção vira um pull request por dia. Quando a rotina precisa de informação, ela pergunta ao time, e a resposta é dada no painel, que mostra também o PR e o custo de cada rodada.</p>
+
+        <h2 class="title-s">Ficha técnica</h2>
+        <p>FastAPI e Jinja2 em Python, com o grafo desenhado em three.js e d3-force. Os dados ficam num schema próprio no PostgreSQL, com chamadas, textos, versões de metaprompt, eventos de log e contagem de tabelas. Roda em Docker atrás de um nginx, só na rede interna, com cerca de dezessete mil linhas entre Python, templates, CSS e JavaScript, 27 rotas e testes automatizados. Fora do próprio schema, as únicas escritas são as chaves de configuração do agente e as respostas do time à autocorreção.</p>
+
+        <p class="work-box__stack">Python · FastAPI · Jinja2 · PostgreSQL · Apache Airflow · Ollama · Groq · Claude · Docker · nginx · three.js · d3-force · FalkorDB</p>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer__inner">
+    <div>
+      <p class="footer__copy">&copy; <span id="year">2026</span> Augusto Mohr. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="Voltar ao topo">
+  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+</button>
+
+<script src="../assets/js/main.js" defer></script>
+<script src="../assets/js/visitas.js" defer></script>
+</body>
+</html>
