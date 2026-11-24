@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude agent in Teams with graph memory, Augusto Mohr</title>
+<meta name="description" content="Company assistant inside Microsoft Teams that answers with Claude through ten MCP servers, decides on its own when to join a group conversation and keeps a formal and informal memory in a graph.">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Claude agent in Teams with graph memory, Augusto Mohr">
+<meta property="og:description" content="Company assistant inside Microsoft Teams that answers with Claude through ten MCP servers, decides on its own when to join a group conversation and keeps a formal and informal memory in a graph.">
+
+<link rel="alternate" hreflang="pt-BR" href="../../projetos/agente-teams.html">
+<link rel="alternate" hreflang="en" href="agente-teams.html">
+<link rel="alternate" hreflang="x-default" href="../../projetos/agente-teams.html">
+
+<link rel="icon" href="../../assets/img/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/img/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+
+<body class="page-case">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" id="header">
+  <div class="container header__inner">
+    <a class="brand" href="../index.html">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__text">Augusto Mohr</span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Main navigation">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="../index.html" data-text="Home">Home</a></li>
+        <li><a class="nav__link" href="../index.html#about" data-text="About">About</a></li>
+        <li><a class="nav__link" href="../index.html#experience" data-text="Experience">Experience</a></li>
+        <li><a class="nav__link is-active" href="../index.html#projects" data-text="Projects">Projects</a></li>
+        <li><a class="nav__link" href="../index.html#contact" data-text="Contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a class="lang-switch" href="../../projetos/agente-teams.html" hreflang="pt-BR" lang="pt-BR" aria-label="Mudar para português">PT</a>
+
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="nav" aria-label="Open menu">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section case">
+    <div class="container">
+      <div class="panel panel--narrow panel--wide reveal">
+
+        <a class="case__back" href="../index.html#projects">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+          Projects
+        </a>
+
+        <div class="title-box">
+          <h1 class="title-a">Claude agent in Teams with graph memory</h1>
+          <div class="line-mf" aria-hidden="true"></div>
+        </div>
+
+        <p class="lead">The company's assistant inside Microsoft Teams. Any employee can talk to it in a one-to-one chat or mention it in a group, and it answers with Claude by querying internal sources: the project management system, the index of the file share, the collected news, Airflow, Grafana, the Brazilian company registry and a memory of its own built from conversations and projects. In groups it decides by itself when it is worth joining the conversation, and it logs the requests that come up.</p>
+
+        <ul class="stats">
+          <li class="stats__item"><span class="stats__n">10</span><span class="stats__l">MCP servers connected to the agent</span></li>
+          <li class="stats__item"><span class="stats__n">93</span><span class="stats__l">tools loaded on demand</span></li>
+          <li class="stats__item"><span class="stats__n">−41%</span><span class="stats__l">context per answer with on-demand tool loading</span></li>
+          <li class="stats__item"><span class="stats__n">~7 s</span><span class="stats__l">median response time</span></li>
+        </ul>
+
+        <h2 class="title-s">From chat to answer</h2>
+        <figure class="strips">
+          <div class="strip">
+            <h3 class="strip__t">MESSAGE</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="MESSAGE">
+              <img src="../../assets/img/fluxos/agente-msg-en.svg" alt="Flowchart of a message: Teams, outbound Bot Framework tunnel, a gate that validates the Microsoft token and the tenant and replies at once, tax ID masking, Claude with context, history and MCPs, and a proactive answer in the chat." loading="lazy">
+            </div>
+          </div>
+          <div class="strip">
+            <h3 class="strip__t">GROUP, NO MENTION</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="GROUP, NO MENTION">
+              <img src="../../assets/img/fluxos/agente-gru-en.svg" alt="Flowchart of group triage: every message is stored, a ten-second window gathers the batch, a small model without tools decides whether to answer, and then the larger model answers once or the agent stays silent and records why." loading="lazy">
+            </div>
+          </div>
+        </figure>
+        <p>Messages arrive through the Bot Framework over an outbound tunnel, with no port open in the firewall. A gate validates the Microsoft token and the tenant and replies immediately, because Teams gives up waiting after about fifteen seconds and the agent may take longer, so it acknowledges the message, shows "typing" and sends the answer later as a proactive message. Before anything reaches the model, tax IDs are masked, and the history is stored already masked.</p>
+        <p>The agent runs Claude Code in non-interactive mode, with Sonnet answering. It receives a metaprompt with the house rules, an index of which tool to use for each kind of question and the rule to always cite the source with the file path; a chat context block with the participants, each person's department and the project linked to the group, with its lead, weekly status, repositories and folder; the thirty most recent messages; and any images pasted into the conversation, downloaded only for that call and deleted at the end.</p>
+        <p>In groups, without a mention, every message is stored, a ten-second window of silence gathers messages into a batch, and Haiku, without tools, decides whether to answer. If so, Sonnet answers once covering the whole batch; if not, the agent only marks the message as seen and records the reason. A message that mentions someone else is never answered, and a cap on triages per group per hour keeps the cost at cents.</p>
+
+        <h2 class="title-s">Tools</h2>
+        <p>There are ten MCP servers, all read-only except the request log: the file share index, the project management system, documents, sector news, Airflow, Grafana, tasks, the company registry, memory and one more internal source. Instead of putting the definitions of all 93 tools in the context, only their names go in, and the model loads each definition when it is about to use the tool. Memory stays loaded because it is the most used source. The change cut the average context per answer by 41%, and by 55% for answers that use no tool.</p>
+
+        <h2 class="title-s">Memory</h2>
+        <figure class="strips">
+          <div class="strip">
+            <h3 class="strip__t">MEMORY</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="MEMORY">
+              <img src="../../assets/img/fluxos/agente-mem-en.svg" alt="Flowchart of memory: nightly DAGs copy the project system into formal memory, turn conversations into episodes, decisions and pending items in informal memory and write the weekly status, all linked in a FalkorDB graph, and a nightly judge evaluates the day's answers." loading="lazy">
+            </div>
+          </div>
+        </figure>
+        <p>Memory is filled at night by Airflow DAGs and read through the memory tool. The formal pillar copies the project management system, with projects, people, clients, milestones, risks and indexed passages from each project's documents. The informal pillar turns conversations into episodes, minutes, decisions and pending items, and a third routine writes each project's weekly status. Both pillars meet in a FalkorDB graph linking project, person, episode and request, and a Teams group is linked to a project by command or automatically, when the chat name matches unambiguously.</p>
+        <p>Overnight, a judge evaluates each of the day's answers from the signals in the conversation itself, such as reactions, corrections or repeated questions, classifies it as correct, partial, missing data or wrong and names the cause. The most common cause is data that is in no source at all, which becomes a list of gaps for the team. A thumbs-down without a comment makes the agent ask once what was missing, and the answer goes to the judge. Changes to the agent are measured this way: the new search over the sector studies, for example, raised answer accuracy on them from 79% to 85%.</p>
+
+        <h2 class="title-s">Security and data protection</h2>
+        <p>Only the company's tenant and only the Teams channel get in, with a body size limit, a per-person hourly message limit and at most two concurrent model calls. Claude runs sandboxed, with no shell and no web access, read-only access to the server and writes only to its own folder, and secret files such as <code>.env</code>, keys, tokens and databases are denied in any folder, tested with nine kinds of decoy file. The agent uses a main account and backup accounts, and when one hits its limit the same question moves to the next. Everything the agent does is tracked in the <a href="llmops.html">LLMOps dashboard</a>.</p>
+
+        <h2 class="title-s">Technical sheet</h2>
+        <p>Python with the Microsoft 365 Agents SDK and Claude Code in non-interactive mode, with Sonnet answering and Haiku triaging. It runs in Docker as an agent container plus a tunnel sidecar, with the image published to GHCR and updated by Watchtower. Messages, conversations, usage, triage, reactions, requests and configuration live in their own PostgreSQL schema, and memory in formal, informal and status schemas plus FalkorDB. About 4,800 lines of code with automated tests, and part of the configuration, such as texts and feature switches, changes without a deploy.</p>
+
+        <p class="work-box__stack">Python · Claude Code · MCP · Microsoft 365 Agents SDK · Bot Framework · PostgreSQL · FalkorDB · Apache Airflow · Docker · GHCR · Watchtower</p>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer__inner">
+    <div>
+      <p class="footer__copy">&copy; <span id="year">2026</span> Augusto Mohr. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">
+  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+</button>
+
+<script src="../../assets/js/main.js" defer></script>
+<script src="../../assets/js/visitas.js" defer></script>
+</body>
+</html>

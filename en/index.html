@@ -214,6 +214,28 @@
       </div>
 
       <article class="work-box reveal">
+        <a class="work-box__head" href="projetos/agente-teams.html">
+          <h3 class="work-box__title">Claude agent in Teams with graph memory</h3>
+          <svg class="icon work-box__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <div class="work-box__body">
+          <p class="work-box__desc">The company's assistant inside Microsoft Teams, answering with Claude through ten MCP servers over internal sources, among them the project management system, the file share index, sector news, Airflow, Grafana and the company registry, and citing the source of every answer. In groups, Haiku triages each batch of messages and decides whether to join the conversation, and only then does Sonnet answer. The definitions of the 93 tools are loaded on demand, which cut the context per answer by 41%. Memory is built overnight by Airflow DAGs that copy the project system and turn conversations into episodes, decisions and pending items, linked in a FalkorDB graph, and a nightly judge evaluates every answer of the day and names the cause of each miss. The agent runs sandboxed, with no shell or web access, and personal data is masked before it reaches the model.</p>
+          <p class="work-box__stack">Python · Claude Code · MCP · Microsoft 365 Agents SDK · PostgreSQL · FalkorDB · Apache Airflow · Docker</p>
+        </div>
+      </article>
+
+      <article class="work-box reveal">
+        <a class="work-box__head" href="projetos/llmops.html">
+          <h3 class="work-box__title">LLMOps and AI governance dashboard</h3>
+          <svg class="icon work-box__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <div class="work-box__body">
+          <p class="work-box__desc">Measures every language model call across eleven services and six providers, local models and APIs alike, through a telemetry library that wraps the call, records time, tokens, time to first token and quota, classifies errors and masks personal data, sending everything in batches without making the service wait. The dashboard shows usage and errors per service, GPU occupancy per service, an audit of the metaprompt, input and response of every run with each prompt version stored by hash, and a risk inventory that points, for each integration, to the file and line of the problem. It also governs the Teams agent, showing the context of each answer layer by layer, and a routine in which Claude analyses Airflow failures every morning and opens one pull request a day with the fix.</p>
+          <p class="work-box__stack">Python · FastAPI · PostgreSQL · Apache Airflow · Ollama · Groq · Claude · Docker · three.js</p>
+        </div>
+      </article>
+
+      <article class="work-box reveal">
         <a class="work-box__head" href="projetos/pipeline-noticias.html">
           <h3 class="work-box__title">Sector news pipeline</h3>
           <svg class="icon work-box__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>

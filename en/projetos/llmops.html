@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLMOps and AI governance dashboard, Augusto Mohr</title>
+<meta name="description" content="Internal dashboard that measures every language model call in the company, audits prompts and responses, inventories the risks of each integration and tracks an agent that fixes Airflow failures.">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLMOps and AI governance dashboard, Augusto Mohr">
+<meta property="og:description" content="Internal dashboard that measures every language model call in the company, audits prompts and responses, inventories the risks of each integration and tracks an agent that fixes Airflow failures.">
+
+<link rel="alternate" hreflang="pt-BR" href="../../projetos/llmops.html">
+<link rel="alternate" hreflang="en" href="llmops.html">
+<link rel="alternate" hreflang="x-default" href="../../projetos/llmops.html">
+
+<link rel="icon" href="../../assets/img/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/img/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+
+<body class="page-case">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" id="header">
+  <div class="container header__inner">
+    <a class="brand" href="../index.html">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__text">Augusto Mohr</span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Main navigation">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="../index.html" data-text="Home">Home</a></li>
+        <li><a class="nav__link" href="../index.html#about" data-text="About">About</a></li>
+        <li><a class="nav__link" href="../index.html#experience" data-text="Experience">Experience</a></li>
+        <li><a class="nav__link is-active" href="../index.html#projects" data-text="Projects">Projects</a></li>
+        <li><a class="nav__link" href="../index.html#contact" data-text="Contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a class="lang-switch" href="../../projetos/llmops.html" hreflang="pt-BR" lang="pt-BR" aria-label="Mudar para português">PT</a>
+
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="nav" aria-label="Open menu">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section case">
+    <div class="container">
+      <div class="panel panel--narrow panel--wide reveal">
+
+        <a class="case__back" href="../index.html#projects">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+          Projects
+        </a>
+
+        <div class="title-box">
+          <h1 class="title-a">LLMOps and AI governance dashboard</h1>
+          <div class="line-mf" aria-hidden="true"></div>
+        </div>
+
+        <p class="lead">Internal dashboard that tracks every use of a language model in the company, service by service: how many calls, how many errors and of which kind, how long they take, how much GPU and quota they use, what went into and came out of each model, and what risks each integration carries. It is also the governance screen for the agent that serves the company through Teams and for the routine in which an agent fixes Airflow failures on its own.</p>
+
+        <ul class="stats">
+          <li class="stats__item"><span class="stats__n">11</span><span class="stats__l">instrumented services, from DAGs to applications</span></li>
+          <li class="stats__item"><span class="stats__n">6</span><span class="stats__l">providers measured, local models and APIs</span></li>
+          <li class="stats__item"><span class="stats__n">9</span><span class="stats__l">screens, from usage and infrastructure to agent evaluation</span></li>
+          <li class="stats__item"><span class="stats__n">~1 ms</span><span class="stats__l">of telemetry overhead per call</span></li>
+        </ul>
+
+        <h2 class="title-s">Why it exists</h2>
+        <p>Each service called its own model, from local models served by Ollama to APIs such as Groq, Claude, Gemini and Mistral, and the only trace was each service's log. Simple questions had no answer: which service uses the GPU the most, how many times a key hit its quota, whether a classification got slower, what exactly was sent to an external provider. The dashboard brings it all into one place without asking services to change their architecture: wrapping the model call in a function from the telemetry library is enough.</p>
+
+        <h2 class="title-s">Collection</h2>
+        <figure class="strips">
+          <div class="strip">
+            <h3 class="strip__t">PER CALL</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="PER CALL">
+              <img src="../../assets/img/fluxos/llmops-col-en.svg" alt="Flowchart of per-call collection: the service calls the model inside measure(), the library records time, tokens and quota, masks personal data and classifies the error, an asynchronous batch sender writes to Postgres and the dashboard aggregates." loading="lazy">
+            </div>
+          </div>
+          <div class="strip">
+            <h3 class="strip__t">EXISTING SOURCES</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="EXISTING SOURCES">
+              <img src="../../assets/img/fluxos/llmops-fon-en.svg" alt="Flowchart of existing sources: a collector every 15 minutes reads Airflow logs in object storage, task and GPU metadata and the agent's schemas, and the dashboard only reads these sources." loading="lazy">
+            </div>
+          </div>
+        </figure>
+        <p>The telemetry library is a single Python file using only the standard library, with a Node mirror for the one service that is not Python. A context manager wraps the call and records service, task, provider, model, the name of the key used (never the secret), status, duration, time to first token, input and output tokens, remaining quota read from the rate-limit headers and, inside Airflow, the run and the task. Exceptions are classified into types such as tokens-per-minute or per-day limit, invalid key, timeout, 5xx error and out of memory, recorded and re-raised without changing the service's behaviour.</p>
+        <p>Records are sent in batches from a separate thread, so the service never waits for the dashboard, and if the dashboard is down the record is dropped and the service carries on. Metaprompt, input and response are stored truncated, masked twice, in the library and at ingestion, for tax IDs, e-mail, phone and secrets, and deleted after fourteen days. Each service carries a literal copy of the library, because each build only sees its own folder, and a sync script flags any copy that drifts.</p>
+        <p>Besides the calls, a collector reads every fifteen minutes what already existed: Airflow logs in object storage, with LLM errors classified, task metadata, GPU metrics, rows written per table and, live, the agent's schemas and the memory graph.</p>
+
+        <h2 class="title-s">What the dashboard shows</h2>
+        <p><strong>Usage.</strong> Calls and errors per day split between the local model and external APIs, runs and duration of the DAGs that use LLMs, latency, p95, time to first token and quota per key. A revoked key that was still configured, for instance, stopped being an error buried in a log and showed up as a series of invalid-key errors with the key's name.</p>
+        <p><strong>Infrastructure.</strong> GPU occupancy per hour and per service, crossing the card's utilisation with the windows in which each service called the local model, GPU use outside any known service, and rows written per day in each table, to catch a pipeline that stopped writing.</p>
+        <p><strong>Governance.</strong> A risk inventory built by reading the code of each integration: where it runs, which model it uses, what data it sends, whether it accepts free text from users and is therefore exposed to prompt injection, which tools the model has and who can trigger it. Each risk points to the file and line it came from, turning data protection and security into a list of fixes.</p>
+        <p><strong>Responses.</strong> An audit of what goes into and out of the models, drilling from pipeline to run, from run to call and from call to the full metaprompt, input and response, already masked. Each metaprompt version is stored by hash, so you can see when a DAG's prompt changed and whether the response changed with it.</p>
+        <p><strong>Agents and memory.</strong> Governance of the Teams agent: conversations, messages and equivalent cost per day, group triage decisions, peak usage per person against the limit and the context of each answer layer by layer, with the tokens of configuration, metaprompt, chat context, tools, history and output. Alongside come the memory graph explorer, in three.js with d3-force, and the report of the nightly judge that evaluates the agent's answers.</p>
+        <p>Every screen is also served as plain text, with an index at <code>/llms.txt</code>, so that an agent can read the dashboard under the same privacy rules as the screen.</p>
+
+        <h2 class="title-s">Airflow self-healing</h2>
+        <figure class="strips">
+          <div class="strip">
+            <h3 class="strip__t">SELF-HEALING</h3>
+            <div class="strip__scroll" tabindex="0" role="region" aria-label="SELF-HEALING">
+              <img src="../../assets/img/fluxos/llmops-aut-en.svg" alt="Flowchart of self-healing: Airflow failures read every morning, grouped by DAG, task and error signature, analysed by Claude, classified and turned into one pull request per day, with questions to the team answered in the dashboard." loading="lazy">
+            </div>
+          </div>
+        </figure>
+        <p>A DAG reads Airflow failures every morning, groups occurrences into problems by DAG, task and error signature and asks Claude to analyse each one. Each problem is classified as already fixed, external, cascading from another failure or uncertain, and whatever has a fix becomes one pull request per day. When the routine needs information it asks the team, and the answer is given in the dashboard, which also shows the PR and the cost of each round.</p>
+
+        <h2 class="title-s">Technical sheet</h2>
+        <p>FastAPI and Jinja2 in Python, with the graph drawn in three.js and d3-force. Data lives in its own PostgreSQL schema, with calls, texts, metaprompt versions, log events and table counts. It runs in Docker behind nginx, on the internal network only, with about seventeen thousand lines across Python, templates, CSS and JavaScript, 27 routes and automated tests. Outside its own schema, the only writes are the agent's configuration keys and the team's answers to the self-healing routine.</p>
+
+        <p class="work-box__stack">Python · FastAPI · Jinja2 · PostgreSQL · Apache Airflow · Ollama · Groq · Claude · Docker · nginx · three.js · d3-force · FalkorDB</p>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer__inner">
+    <div>
+      <p class="footer__copy">&copy; <span id="year">2026</span> Augusto Mohr. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">
+  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+</button>
+
+<script src="../../assets/js/main.js" defer></script>
+<script src="../../assets/js/visitas.js" defer></script>
+</body>
+</html>
