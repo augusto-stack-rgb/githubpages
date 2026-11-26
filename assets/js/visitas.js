@@ -1,13 +1,14 @@
-// Contador de visitas proprio: uma linha por pagina vista na tabela visitas do
-// Supabase. A chave abaixo e a publishable (feita para ficar no navegador) e so
-// consegue inserir; a leitura e pelo painel "Visitas" do home.
+// Contador de visitas proprio: cada pagina vista vira uma mensagem num topico do
+// ntfy.sh, que guarda as mensagens por 12 horas. Um coletor no computador do
+// dono (bases_empresas/contatos/visitas.py) busca o topico e grava tudo num CSV
+// local. Nada fica num banco online.
 //
-// Links por contato: ?ref=nome marca a visita e fica guardado na sessao, para
-// as paginas seguintes tambem saberem de onde a pessoa veio.
+// Links por contato: ?ref=codigo marca a visita e fica guardado na sessao, para
+// as paginas seguintes tambem saberem de onde a pessoa veio. Os e-mails de
+// candidatura levam um codigo por empresa no link do portfolio e no do CV.
 // ?nao-contar=1 desliga a contagem neste navegador (?nao-contar=0 religa).
 (function () {
-  var URL = 'https://khkedvcesmaaczwboocb.supabase.co/rest/v1/visitas';
-  var CHAVE = 'sb_publishable_FauiYZecNitgttk5ZGtjiw_OPUEGdwq';
+  var DESTINO = 'https://ntfy.sh/visitas-bd92004a297e78507327';
 
   function guardado(armazem, chave, valor) {
     try {
@@ -31,18 +32,18 @@
   }
 
   var cortar = function (s, n) { return s ? String(s).slice(0, n) : null; };
-  fetch(URL, {
-    method: 'POST',
-    keepalive: true,
-    headers: { apikey: CHAVE, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-    body: JSON.stringify({
-      pagina: cortar(location.pathname, 300),
-      ref: ref,
-      origem: cortar(document.referrer, 300),
-      idioma: cortar(navigator.language, 40),
-      tela: screen.width + 'x' + screen.height,
-      visitante: visitante.slice(0, 40),
-      user_agent: cortar(navigator.userAgent, 400)
-    })
-  }).catch(function () {});
+  var corpo = JSON.stringify({
+    pagina: cortar(location.pathname, 300),
+    ref: ref,
+    origem: cortar(document.referrer, 300),
+    idioma: cortar(navigator.language, 40),
+    tela: screen.width + 'x' + screen.height,
+    visitante: visitante.slice(0, 40),
+    user_agent: cortar(navigator.userAgent, 400)
+  });
+  // sendBeacon sobrevive a troca de pagina (as paginas de CV redirecionam para o PDF).
+  try {
+    if (navigator.sendBeacon && navigator.sendBeacon(DESTINO, corpo)) return;
+  } catch (e) {}
+  fetch(DESTINO, { method: 'POST', keepalive: true, body: corpo }).catch(function () {});
 })();
